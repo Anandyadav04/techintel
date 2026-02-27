@@ -18,61 +18,75 @@ export default function AIBriefCard({ trends }) {
         }
     }, [topics, selectedTech]);
 
+    // Clear the brief if they change the technology so they know they need to generate again
     useEffect(() => {
+        setBrief('');
+        setError(null);
+    }, [selectedTech]);
+
+    const handleGenerate = async () => {
         if (!selectedTech) return;
 
-        let isMounted = true;
-        const fetchBrief = async () => {
-            setLoading(true);
-            setError(null);
-            setBrief('');
+        setLoading(true);
+        setError(null);
+        setBrief('');
 
-            try {
-                // Encode the tech name for the URL path
-                const res = await axios.get(`${API}/brief/${encodeURIComponent(selectedTech)}`);
-                if (isMounted) {
-                    setBrief(res.data.brief);
+        try {
+            // Encode the tech name for the URL path
+            const res = await axios.get(`${API}/brief/${encodeURIComponent(selectedTech)}`);
+            setBrief(res.data.brief);
+        } catch (err) {
+            if (err.response && err.response.status === 429) {
+                setError('Rate limit exceeded. The free Gemini API tier only allows a few requests per minute. Please wait 60 seconds and try again.');
+            } else if (err.response && err.response.data && err.response.data.detail) {
+                // Sometimes the backend throws a 500 with the specific Google API error string
+                const detail = String(err.response.data.detail);
+                if (detail.includes('429') || detail.includes('Quota')) {
+                    setError('Rate limit exceeded. The free Gemini API tier only allows a few requests per minute. Please wait 60 seconds and try again.');
+                } else {
+                    setError(`Failed to generate AI brief: ${detail}`);
                 }
-            } catch (err) {
-                if (isMounted) {
-                    setError('Failed to generate AI brief. Confirm backend is running and GEMINI_API_KEY is set.');
-                }
-            } finally {
-                if (isMounted) {
-                    setLoading(false);
-                }
+            } else {
+                setError('Failed to generate AI brief. Confirm backend is running and GROQ_API_KEY is set.');
             }
-        };
-
-        fetchBrief();
-
-        return () => {
-            isMounted = false;
-        };
-    }, [selectedTech]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (!topics.length) return null;
 
     return (
         <div className="chart-card ai-brief-card">
-            <div className="chart-card-header ai-brief-header">
+            <div className="chart-card-header ai-brief-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                    <h3>
+                    <h3 style={{ margin: 0, paddingBottom: '4px' }}>
                         ✨ Generative AI Executive Brief
                     </h3>
                     <span className="ai-model-badge">AI Powered</span>
                 </div>
 
-                <select
-                    className="ai-tech-select"
-                    value={selectedTech}
-                    onChange={e => setSelectedTech(e.target.value)}
-                    disabled={loading}
-                >
-                    {topics.map(t => (
-                        <option key={t} value={t}>{t}</option>
-                    ))}
-                </select>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <select
+                        className="ai-tech-select"
+                        value={selectedTech}
+                        onChange={e => setSelectedTech(e.target.value)}
+                        disabled={loading}
+                    >
+                        {topics.map(t => (
+                            <option key={t} value={t}>{t}</option>
+                        ))}
+                    </select>
+
+                    <button
+                        className="export-btn"
+                        onClick={handleGenerate}
+                        disabled={loading}
+                        style={{ padding: '6px 16px', margin: 0 }}
+                    >
+                        {loading ? 'Thinking...' : 'Generate ⚡'}
+                    </button>
+                </div>
             </div>
 
             <div className="ai-brief-content">
@@ -85,13 +99,17 @@ export default function AIBriefCard({ trends }) {
                     <div className="ai-error">
                         <p>{error}</p>
                     </div>
-                ) : (
+                ) : brief ? (
                     <div className="ai-text">
                         {/* Simple markdown parsing for bold text since Gemini uses **bold** */}
                         <p dangerouslySetInnerHTML={{
                             __html: brief.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                                 .replace(/\n/g, '<br />')
                         }} />
+                    </div>
+                ) : (
+                    <div className="ai-text" style={{ textAlign: 'center', opacity: 0.6, padding: '20px 0' }}>
+                        <p>Select a technology and click <strong>Generate</strong> to write a custom AI executive brief.</p>
                     </div>
                 )}
             </div>

@@ -106,6 +106,17 @@ export default function App() {
     );
   }
 
+  // ── PDF Export Logic (Native Browser) ──
+  const handleExportPDF = () => {
+    // Adding a class purely in case we want specific print overrides active via JS
+    document.body.classList.add('exporting-pdf');
+
+    // Trigger the native browser high-quality PDF print dialog
+    window.print();
+
+    document.body.classList.remove('exporting-pdf');
+  };
+
   // ── Page Content Router ──
   const renderPage = () => {
     switch (page) {
@@ -218,6 +229,14 @@ export default function App() {
             <span className="header-breadcrumb">{PAGE_SUBTITLES[page]}</span>
           </div>
           <div className="header-right">
+            {page === 'dashboard' && (
+              <button
+                className="export-btn"
+                onClick={handleExportPDF}
+              >
+                📥 Download Report
+              </button>
+            )}
             <div className="header-badge">
               <span className="badge-dot" />
               Live

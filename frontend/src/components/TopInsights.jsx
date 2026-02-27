@@ -3,10 +3,10 @@
  */
 
 const CARD_CONFIG = [
-  { key: 'total_topics',   label: 'Total Topics',     icon: '📊', format: v => v },
-  { key: 'total_mentions', label: 'Total Mentions',    icon: '📈', format: v => v?.toLocaleString() },
-  { key: 'top_rising_1',   label: 'Hottest Topic',     icon: '🔥' },
-  { key: 'top_declining_1', label: 'Cooling Down',     icon: '❄️' },
+  { key: 'total_topics', label: 'Total Topics', icon: '📊', format: v => v },
+  { key: 'total_mentions', label: 'Total Mentions', icon: '📈', format: v => v?.toLocaleString() },
+  { key: 'top_rising_1', label: 'Hottest Topic', icon: '🔥' },
+  { key: 'top_declining_1', label: 'Cooling Down', icon: '❄️' },
 ];
 
 export default function TopInsights({ summary }) {

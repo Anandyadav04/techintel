@@ -287,14 +287,45 @@ body {
 .header-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--accent-primary);
   padding: 6px 14px;
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid var(--border-color);
   border-radius: 20px;
-  font-size: 0.78rem;
-  color: var(--accent-secondary);
-  font-weight: 500;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.export-btn {
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px -4px rgba(99, 102, 241, 0.4);
+}
+
+.export-btn:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px rgba(99, 102, 241, 0.6);
+}
+
+.export-btn:disabled {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .header-badge .badge-dot {
@@ -1395,4 +1426,103 @@ body {
   padding: 16px;
   border-radius: var(--radius-md);
   font-size: 0.9rem;
+}
+
+/* ── Print Styles for PDF Export (Native) ───────────────────────────────── */
+@media print {
+
+  /* Reset background to white and text to black for clean printing */
+  body,
+  #root,
+  .app-container {
+    background: white !important;
+    color: black !important;
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide screen-only UI elements */
+  .sidebar,
+  .export-btn,
+  .header-badge,
+  .badge-dot {
+    display: none !important;
+  }
+
+  /* Simplify the header to just the title */
+  .header {
+    position: static !important;
+    background: transparent !important;
+    border-bottom: 2px solid #ccc !important;
+    padding: 0 0 20px 0 !important;
+    margin-bottom: 30px !important;
+    backdrop-filter: none !important;
+  }
+
+  .header-left h2 {
+    color: black !important;
+    font-size: 24pt !important;
+  }
+
+  .header-breadcrumb {
+    color: #555 !important;
+  }
+
+  /* Expand main container to fill the page, removing sidebar margin */
+  .main-container {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  /* Remove glowing decorations */
+  .main-container::before {
+    display: none !important;
+  }
+
+  /* Format cards as clean printable blocks */
+  .glass-card,
+  .chart-card {
+    background: white !important;
+    backdrop-filter: none !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    color: black !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-bottom: 30px !important;
+  }
+
+  /* Ensure headings and text inside cards are black */
+  .glass-card h2,
+  .glass-card h3,
+  .glass-card span,
+  .glass-card p,
+  .chart-card h2,
+  .chart-card h3,
+  .chart-card span,
+  .chart-card p,
+  .metric-label,
+  .metric-value,
+  .insight-label,
+  .meta-item {
+    color: black !important;
+  }
+
+  /* Remove gradient text effects */
+  .insight-value.gradient-text {
+    background: none !important;
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+  }
+
+  /* Ensure charts fit on the page */
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid !important;
+  }
 }
