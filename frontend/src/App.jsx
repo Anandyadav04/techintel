@@ -10,6 +10,7 @@ import axios from 'axios';
 import TopInsights from './components/TopInsights';
 import TrendChart from './components/TrendChart';
 import TopicClusters from './components/TopicClusters';
+import AIBriefCard from './components/AIBriefCard';
 import TrendsPage from './components/TrendsPage';
 import ClustersPage from './components/ClustersPage';
 import ForecastsPage from './components/ForecastsPage';
@@ -130,6 +131,11 @@ export default function App() {
             <div className="charts-grid">
               <TrendChart trends={trends} />
               <TopicClusters clusters={clusters} />
+            </div>
+
+            {/* Row 2.5 — Generative AI Executive Brief */}
+            <div style={{ marginBottom: '28px' }}>
+              <AIBriefCard trends={trends} />
             </div>
 
             {/* Row 3 — Rising & Declining Topics */}

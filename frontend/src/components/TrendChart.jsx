@@ -99,6 +99,26 @@ export default function TrendChart({ trends }) {
                 tension: 0.35,
                 fill: false,
             },
+            {
+                label: `${topic} (upper)`,
+                data: [...histPad, t.historical[histLen - 1].mentions, ...t.forecast.map(p => p.upper_bound)],
+                borderColor: 'transparent',
+                backgroundColor: color.bg.replace('0.10', '0.15'), // slightly darker for confidence interval
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                fill: '+1',
+                tension: 0.35,
+            },
+            {
+                label: `${topic} (lower)`,
+                data: [...histPad, t.historical[histLen - 1].mentions, ...t.forecast.map(p => p.lower_bound)],
+                borderColor: 'transparent',
+                backgroundColor: 'transparent',
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                fill: false,
+                tension: 0.35,
+            },
         ];
     });
 
@@ -116,7 +136,7 @@ export default function TrendChart({ trends }) {
                     font: { family: 'Inter', size: 11 },
                     boxWidth: 12,
                     padding: 16,
-                    filter: item => !item.text.includes('(forecast)'),
+                    filter: item => !item.text.includes('(forecast)') && !item.text.includes('(upper)') && !item.text.includes('(lower)'),
                 },
             },
             tooltip: {
@@ -128,7 +148,7 @@ export default function TrendChart({ trends }) {
                 padding: 12,
                 titleFont: { family: 'Inter', weight: '600' },
                 bodyFont: { family: 'Inter' },
-                filter: item => !item.dataset.label.includes('(forecast)'),
+                filter: item => !item.dataset.label.includes('(forecast)') && !item.dataset.label.includes('(upper)') && !item.dataset.label.includes('(lower)'),
             },
         },
         scales: {

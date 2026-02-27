@@ -1277,3 +1277,122 @@ body {
   background: rgba(99, 102, 241, 0.08);
   border-radius: 8px;
 }
+
+/* AI Brief Card Settings */
+.ai-brief-card {
+  border: 1px solid rgba(167, 139, 250, 0.3) !important;
+  /* Purple border for AI */
+  background: linear-gradient(135deg, rgba(30, 33, 58, 0.8) 0%, rgba(20, 23, 40, 0.9) 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-brief-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6366f1, #a78bfa, #f472b6);
+}
+
+.ai-brief-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.ai-brief-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.ai-model-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(167, 139, 250, 0.15);
+  color: #c4b5fd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 6px;
+  display: inline-block;
+  letter-spacing: 0.5px;
+}
+
+.ai-tech-select {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.ai-tech-select:focus {
+  border-color: #a78bfa;
+}
+
+.ai-brief-content {
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ai-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.ai-text strong {
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+.ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #a78bfa;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.ai-sparkles {
+  animation: pulse-sparkle 1.5s infinite;
+}
+
+@keyframes pulse-sparkle {
+
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.ai-error {
+  color: var(--accent-rose);
+  background: rgba(244, 63, 94, 0.1);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+}

@@ -4,36 +4,28 @@
 
 const SOURCES = [
     {
-        name: 'TechCrunch',
-        type: 'News',
-        icon: '📰',
-        docs: 0,
+        name: 'Wikipedia',
+        type: 'Search Trends',
+        icon: '📈',
+        docs: 'time-series',
         status: 'active',
-        description: 'Leading technology media property covering startups and tech industry news.',
+        description: 'Historical pageview metrics used for tracking trends and training predictive forecasting models.',
     },
     {
-        name: 'ArXiv',
+        name: 'arXiv',
         type: 'Research Papers',
         icon: '🎓',
         docs: 0,
         status: 'active',
-        description: 'Open-access repository of scientific papers in AI, ML, and computing.',
+        description: 'Open-access repository of scientific papers in quantitative biology, computer science, and engineering.',
     },
     {
-        name: 'IEEE Spectrum',
-        type: 'Journal',
-        icon: '🔬',
+        name: 'HackerNews',
+        type: 'Tech News',
+        icon: '📰',
         docs: 0,
         status: 'active',
-        description: 'Magazine of the IEEE covering engineering and applied sciences.',
-    },
-    {
-        name: 'Wired',
-        type: 'News',
-        icon: '🌐',
-        docs: 0,
-        status: 'active',
-        description: 'Monthly magazine focused on emerging technologies and culture.',
+        description: 'Social news website focusing on computer science, AI, startups, and entrepreneurship.',
     },
     {
         name: 'GitHub Trending',
@@ -41,7 +33,7 @@ const SOURCES = [
         icon: '💻',
         docs: 0,
         status: 'active',
-        description: 'Trending open-source repositories across all programming languages.',
+        description: 'Trending open-source repositories driving innovation across all programming languages.',
     },
 ];
 
@@ -51,7 +43,10 @@ export default function SourcesPage({ documents }) {
     (documents || []).forEach(d => {
         counts[d.source] = (counts[d.source] || 0) + 1;
     });
-    const sources = SOURCES.map(s => ({ ...s, docs: counts[s.name] || 0 }));
+    const sources = SOURCES.map(s => ({
+        ...s,
+        docs: s.docs === 'time-series' ? 'Time-series data' : (counts[s.name] || 0)
+    }));
 
     return (
         <div className="page-view">
@@ -75,7 +70,9 @@ export default function SourcesPage({ documents }) {
                         </div>
                         <p className="source-desc">{src.description}</p>
                         <div className="source-card-footer">
-                            <span className="source-docs">{src.docs} documents</span>
+                            <span className="source-docs">
+                                {typeof src.docs === 'number' ? `${src.docs} documents` : src.docs}
+                            </span>
                         </div>
                     </div>
                 ))}
