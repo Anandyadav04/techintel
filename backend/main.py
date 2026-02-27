@@ -2,8 +2,15 @@
 main.py — FastAPI server for the Tech Intelligence Platform.
 Serves trend, cluster, and summary data to the frontend dashboard.
 """
+import json
+import logging
+import asyncio
+from dotenv import load_dotenv
 
-from fastapi import FastAPI
+# Load environment variables (e.g., GEMINI_API_KEY)
+load_dotenv()
+
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
 from data_generator import generate_trend_data, generate_raw_documents
@@ -15,8 +22,10 @@ from storage import (
     save_raw_documents,
     load_trends,
     load_clusters,
+    load_raw_documents,
 )
 from real_ingester import ingest_all, fetch_wikipedia_trends
+from ai_summarizer import generate_brief
 
 # ── Initialise app ────────────────────────────────────────────────
 
@@ -113,13 +122,25 @@ def get_summary_endpoint():
 
 
 @app.get("/api/documents")
-def get_documents():
+def get_documents_api(limit: int = 100):
     """
-    Return the raw text documents from unstructured storage.
+    Return the raw text documents from unstructured storage, with an optional limit.
     """
-    from storage import load_raw_documents
     docs = load_raw_documents()
-    return {"documents": docs}
+    return {"documents": docs[:limit]}
+
+
+@app.get("/api/brief/{technology}")
+def get_brief_api(technology: str):
+    """
+    Generate an AI executive brief for a specific technology on demand.
+    """
+    docs = load_raw_documents()
+    # Filter documents relevant to the requested technology
+    tech_docs = [d for d in docs if d.get("technology") == technology]
+    
+    brief = generate_brief(technology, tech_docs)
+    return {"technology": technology, "brief": brief}
 
 
 # ── Health check ──────────────────────────────────────────────────
